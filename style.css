@@ -1,11 +1,12 @@
-/* =============================
-   Global Styles
-============================= */
+/* --------------------------
+   BODY
+-------------------------- */
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  padding: 0;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   background-color: #1c1c23;
-  color: #e5e5e5;
+  color: #ccc;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -13,151 +14,163 @@ body {
   overflow: hidden;
 }
 
-#app {
+/* --------------------------
+   APP NAME (BOTTOM LEFT/RIGHT)
+-------------------------- */
+.app-name {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.2);
+  text-align: right;
+}
+
+.app-name .main {
+  display: block;
+  font-weight: bold;
+}
+
+.app-name .year {
+  font-size: 0.6rem;
+  display: block;
+}
+
+/* --------------------------
+   SPLASH SCREEN
+-------------------------- */
+.splash-logo {
+  font-size: 2rem;
+  font-weight: bold;
   text-align: center;
-  max-width: 420px;
-  width: 90%;
-  padding: 30px 20px;
-  animation: fadeIn 0.3s ease-in-out;
+  margin-bottom: 12px;
 }
 
-/* Instruction text */
-#app > div:first-child {
-  font-size: 1.35rem;
-  font-weight: 500;
-  margin-bottom: 25px;
-  line-height: 1.5;
+.splash-tagline {
+  font-size: 1rem;
+  text-align: center;
+  color: #aaa;
 }
 
-/* Timer Circle */
+/* --------------------------
+   BUTTONS
+-------------------------- */
+button {
+  margin: 4px;
+  padding: 10px 16px;
+  background: #6bc5a6;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background: #5aa38f;
+}
+
+/* --------------------------
+   TIMER
+-------------------------- */
 .timer-circle {
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  margin: 0 auto 30px auto;
   position: relative;
-  background-color: #1c1c23;
-  box-shadow: inset 0 0 12px rgba(0,0,0,0.6);
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
-}
-
-.timer-circle:hover {
-  transform: scale(1.05);
-  box-shadow: inset 0 0 15px rgba(0,0,0,0.7);
+  width: 120px;
+  height: 120px;
+  margin: 24px auto;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .timer-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   border-radius: 50%;
   background: conic-gradient(#6bc5a6 0deg, #444 0deg);
   transform: rotate(-90deg);
-  transition: background 0.1s linear;
+  z-index: -1;
 }
 
-.timer-circle #timerText {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 1.45rem;
-  font-weight: 600;
-  color: #e5e5e5;
-  text-shadow: 0 0 6px rgba(107,197,166,0.5);
+#timerText {
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
-/* Timer Pulse Animation */
-@keyframes pulse {
-  0% { transform: scale(1); box-shadow: 0 0 6px rgba(107,197,166,0.4); }
-  50% { transform: scale(1.05); box-shadow: 0 0 15px rgba(107,197,166,0.6); }
-  100% { transform: scale(1); box-shadow: 0 0 6px rgba(107,197,166,0.4); }
+/* --------------------------
+   TIMER PULSE ANIMATION
+-------------------------- */
+.pulse {
+  animation: pulseAnimation 1.2s infinite;
 }
 
-.timer-circle.pulse {
-  animation: pulse 1.2s infinite ease-in-out;
+@keyframes pulseAnimation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
 }
 
-/* Buttons */
-button {
-  display: block;
-  margin: 30px auto 0 auto;
-  padding: 15px 30px;
-  font-size: 1rem;
-  background: #2b2b35;
-  color: #e5e5e5;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: background 0.3s, transform 0.1s, box-shadow 0.2s;
-  font-weight: 500;
-  box-shadow: 0 0 6px rgba(0,0,0,0.3);
+/* --------------------------
+   WEEKLY SUMMARY
+-------------------------- */
+.weekly-summary {
+  background: rgba(28,28,35,0.95);
+  padding: 20px;
+  border-radius: 12px;
+  color: #ccc;
+  max-width: 340px;
+  margin: 40px auto;
+  text-align: left;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-button:hover {
-  background: #3a3a47;
-  transform: scale(1.03);
-  box-shadow: 0 0 12px rgba(107,197,166,0.5);
-}
-
-button:active {
-  transform: scale(0.98);
-  box-shadow: 0 0 6px rgba(0,0,0,0.3);
-}
-
-/* Bottom left branding */
-.app-name {
-  position: fixed;
-  bottom: 6px;
-  left: 8px;
-  font-weight: 600;
-  pointer-events: none;
-  user-select: none;
-}
-
-.app-name span.main {
-  font-size: 0.7rem;
-  color: rgba(230,230,230,0.12);
-  display: block;
-}
-
-.app-name span.year {
-  font-size: 0.5rem;
-  color: rgba(230,230,230,0.08);
-  display: block;
-  margin-top: -2px;
-}
-
-/* Splash Screen */
-.splash-logo {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #6bc5a6;
-  margin-bottom: 15px;
-  text-shadow: 0 0 12px rgba(107,197,166,0.8);
-  opacity: 0;
-  animation: fadeIn 1s forwards;
-}
-
-.splash-tagline {
+.weekly-summary h2 {
   font-size: 1.2rem;
-  font-weight: 500;
-  color: #e5e5e5;
-  opacity: 0;
-  animation: fadeIn 1s forwards 0.5s;
+  margin-bottom: 12px;
+  color: #fff;
 }
 
-/* Responsive */
-@media (max-width: 400px) {
-  .timer-circle { width: 90px; height: 90px; }
-  .timer-circle #timerText { font-size: 1.25rem; }
-  button { padding: 12px 25px; font-size: 0.95rem; }
-  .splash-logo { font-size: 2rem; }
-  .splash-tagline { font-size: 1rem; }
+.weekly-summary p {
+  margin: 6px 0;
 }
 
-/* Fade-in animation */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+.weekly-summary button {
+  margin-top: 12px;
+  background: #6bc5a6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 0.9rem;
 }
 
+.weekly-summary button:hover {
+  background: #5aa38f;
+}
+
+.weekly-summary .version {
+  font-size: 0.6rem;
+  color: #555;
+  margin-top: 8px;
+}
+
+/* --------------------------
+   DAILY CHOICE BUTTONS
+-------------------------- */
+#yesBtn, #littleBtn, #noBtn {
+  min-width: 80px;
+}
+
+/* --------------------------
+   GENERAL TEXT
+-------------------------- */
+div {
+  text-align: center;
+  font-size: 1rem;
+}
