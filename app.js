@@ -1,3 +1,6 @@
+const APP_VERSION = "1.1.1.1"; // Version tracking
+console.log(`LIMEN Version: ${APP_VERSION}`);
+
 const app = document.getElementById('app');
 
 /* --------------------------
@@ -160,6 +163,7 @@ function showWeeklySummary() {
       <p>Fully overwhelmed: ${counts["Yes"]} day(s)</p>
       <p>A little overwhelmed: ${counts["A little"]} day(s)</p>
       <p>Calm: ${counts["No"]} day(s)</p>
+      <p style="font-size:0.6rem; color:#555;">Version: ${APP_VERSION}</p>
       <button id="closeSummary">Close</button>
     </div>
   `;
