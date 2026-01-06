@@ -14,13 +14,31 @@ function startSession() {
 
 function deliverIntervention(state) {
   const intervention = interventions[state];
+  const duration = intervention.duration; // in seconds
+
   app.innerHTML = `
-    <div>${intervention.text}</div>
+    <div style="margin-bottom: 20px;">${intervention.text}</div>
+    <div class="timer-circle">
+      <div id="timerFill" class="timer-fill"></div>
+    </div>
     <button id="doneBtn">Done</button>
   `;
 
   const startTime = Date.now();
+  const fill = document.getElementById('timerFill');
+
+  // Animate timer
+  const interval = setInterval(() => {
+    const elapsed = (Date.now() - startTime) / 1000; // seconds
+    const percent = Math.min(elapsed / duration, 1);
+    fill.style.background = `conic-gradient(#0f0 ${percent * 360}deg, #555 0deg)`;
+
+    if (percent >= 1) clearInterval(interval);
+  }, 100);
+
+  // Done button stops timer
   document.getElementById('doneBtn').onclick = () => {
+    clearInterval(interval);
     Storage.appendSession({
       state,
       timestamp: new Date()
@@ -50,3 +68,4 @@ function saveFeedback(state, feedback, startTime) {
 window.onload = () => {
   showEntry();
 };
+
