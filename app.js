@@ -13,8 +13,20 @@ const Storage = {
 };
 
 /* HELPERS */
-function fadeIn(el, duration=300){ el.style.opacity=0; el.style.transition=`opacity ${duration}ms ease`; requestAnimationFrame(()=>el.style.opacity=1); }
-function fadeOut(el, duration=300){ return new Promise(res=>{ el.style.opacity=1; el.style.transition=`opacity ${duration}ms ease`; el.style.opacity=0; setTimeout(res,duration); }); }
+function fadeIn(el, duration=300){ 
+  el.style.opacity=0; 
+  el.style.transition=`opacity ${duration}ms ease`; 
+  requestAnimationFrame(()=>el.style.opacity=1); 
+}
+function fadeOut(el, duration=300){ 
+  return new Promise(res=>{ 
+    el.style.opacity=1; 
+    el.style.transition=`opacity ${duration}ms ease`; 
+    el.style.opacity=0; 
+    setTimeout(res,duration); 
+  }); 
+}
+
 async function runTimer(duration){
   const timerText=document.getElementById('timerText');
   const fill=document.getElementById('timerFill');
@@ -47,10 +59,16 @@ function showInstallHint(){
 }
 
 /* SERVICE WORKER */
-if('serviceWorker' in navigator){ navigator.serviceWorker.register('./sw.js').then(()=>console.log('SW registered')).catch(err=>console.error(err)); }
+if('serviceWorker' in navigator){ 
+  navigator.serviceWorker.register('./sw.js')
+    .then(()=>console.log('Service Worker registered'))
+    .catch(err=>console.error('SW registration failed:',err));
+}
 
 /* LOGGING */
-function logResponse(resp){ Storage.appendSession({timestamp:new Date(),response:resp}); }
+function logResponse(resp){ 
+  Storage.appendSession({timestamp:new Date(),response:resp}); 
+}
 
 /* WEEKLY SUMMARY */
 function showWeeklySummary(){
@@ -59,6 +77,7 @@ function showWeeklySummary(){
   const weeklyData=history.filter(s=>new Date(s.timestamp)>=oneWeekAgo);
   const counts={"Yes":0,"A little":0,"No":0};
   weeklyData.forEach(s=>counts[s.response]++);
+  
   app.innerHTML=`<div class="weekly-summary">
     <h2>Weekly Reflection</h2>
     <p>Fully overwhelmed: ${counts["Yes"]} day(s)</p>
@@ -67,6 +86,7 @@ function showWeeklySummary(){
     <p class="version">Version: ${APP_VERSION}</p>
     <button id="closeSummary">Close</button>
   </div>`;
+  
   document.getElementById('closeSummary').onclick=()=>showEntry();
 }
 
@@ -79,31 +99,57 @@ function showEntry(){
       <button id="noBtn">No</button>
     </div>
     <div class="app-name"><span class="main">LIMEN</span><span class="year">2026</span></div>`;
+  
   fadeIn(app);
-  document.getElementById('yesBtn').onclick=async()=>{ logResponse("Yes"); await fadeOut(app); showWeeklySummary(); };
-  document.getElementById('littleBtn').onclick=async()=>{ logResponse("A little"); await fadeOut(app); startSession(); };
-  document.getElementById('noBtn').onclick=async()=>{ logResponse("No"); await fadeOut(app); showWeeklySummary(); };
+  
+  document.getElementById('yesBtn').onclick=async()=>{
+    logResponse("Yes");
+    await fadeOut(app);
+    showWeeklySummary();
+  };
+  
+  document.getElementById('littleBtn').onclick=async()=>{
+    logResponse("A little");
+    await fadeOut(app);
+    startSession(); // default is Baseline; could be randomized
+  };
+  
+  document.getElementById('noBtn').onclick=async()=>{
+    logResponse("No");
+    await fadeOut(app);
+    showWeeklySummary();
+  };
 }
 
 /* INTERVENTION */
-async function startSession(){
-  const steps=interventions.Baseline.steps;
-  for(const step of steps){
-    app.innerHTML=`<div>${step.text}</div>
-      <div class="timer-circle pulse">
-        <div id="timerFill" class="timer-fill"></div>
-        <div id="timerText">${step.duration}</div>
-      </div>
-      <div class="app-name"><span class="main">LIMEN</span><span class="year">2026</span></div>`;
-    fadeIn(app);
-    await runTimer(step.duration);
-    await fadeOut(app);
-  }
+async function startSession(interventionKey="Baseline"){
+  const step = interventions[interventionKey];
+  
+  app.innerHTML=`<div>${step.text}</div>
+    <div class="timer-circle pulse">
+      <div id="timerFill" class="timer-fill"></div>
+      <div id="timerText">${step.duration}</div>
+    </div>
+    <div class="app-name"><span class="main">LIMEN</span><span class="year">2026</span></div>`;
+  
+  fadeIn(app);
+  await runTimer(step.duration);
+  await fadeOut(app);
+  
   showEntry();
 }
 
-/* SPLASH */
-async function showSplash(){ app.innerHTML=`<div class="splash-logo">LIMEN</div><div class="splash-tagline">Pause before crossing.</div>`; fadeIn(app); await new Promise(r=>setTimeout(r,1800)); await fadeOut(app); showEntry(); }
+/* SPLASH SCREEN */
+async function showSplash(){
+  app.innerHTML=`<div class="splash-logo">LIMEN</div><div class="splash-tagline">Pause before crossing.</div>`;
+  fadeIn(app);
+  await new Promise(r=>setTimeout(r,1800));
+  await fadeOut(app);
+  showEntry();
+}
 
 /* INIT */
-window.onload=()=>{ showSplash(); setTimeout(showInstallHint,1500); };
+window.onload=()=>{ 
+  showSplash(); 
+  setTimeout(showInstallHint,1500); 
+};
