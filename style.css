@@ -1,6 +1,4 @@
-/* --------------------------
-   BODY
--------------------------- */
+/* BODY */
 body {
   margin: 0;
   padding: 0;
@@ -12,11 +10,10 @@ body {
   align-items: center;
   height: 100vh;
   overflow: hidden;
+  position: relative;
 }
 
-/* --------------------------
-   APP NAME (BOTTOM LEFT/RIGHT)
--------------------------- */
+/* APP NAME */
 .app-name {
   position: absolute;
   bottom: 12px;
@@ -25,99 +22,26 @@ body {
   color: rgba(255, 255, 255, 0.2);
   text-align: right;
 }
+.app-name .main { display: block; font-weight: bold; }
+.app-name .year { display: block; font-size: 0.6rem; }
 
-.app-name .main {
-  display: block;
-  font-weight: bold;
-}
+/* SPLASH */
+.splash-logo { font-size: 2rem; font-weight: bold; text-align: center; margin-bottom: 12px; }
+.splash-tagline { font-size: 1rem; text-align: center; color: #aaa; }
 
-.app-name .year {
-  font-size: 0.6rem;
-  display: block;
-}
+/* BUTTONS */
+button { margin: 4px; padding: 10px 16px; background: #6bc5a6; border: none; border-radius: 8px; color: #fff; font-size: 0.9rem; cursor: pointer; transition: background 0.2s ease; }
+button:hover { background: #5aa38f; }
+#yesBtn, #littleBtn, #noBtn { min-width: 80px; }
 
-/* --------------------------
-   SPLASH SCREEN
--------------------------- */
-.splash-logo {
-  font-size: 2rem;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 12px;
-}
+/* TIMER */
+.timer-circle { position: relative; width: 120px; height: 120px; margin: 24px auto; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+.timer-fill { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; background: conic-gradient(#6bc5a6 0deg, #444 0deg); transform: rotate(-90deg); z-index: -1; }
+#timerText { font-size: 1.5rem; font-weight: bold; }
+.pulse { animation: pulseAnimation 1.2s infinite; }
+@keyframes pulseAnimation { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-.splash-tagline {
-  font-size: 1rem;
-  text-align: center;
-  color: #aaa;
-}
-
-/* --------------------------
-   BUTTONS
--------------------------- */
-button {
-  margin: 4px;
-  padding: 10px 16px;
-  background: #6bc5a6;
-  border: none;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-button:hover {
-  background: #5aa38f;
-}
-
-/* --------------------------
-   TIMER
--------------------------- */
-.timer-circle {
-  position: relative;
-  width: 120px;
-  height: 120px;
-  margin: 24px auto;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.timer-fill {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: conic-gradient(#6bc5a6 0deg, #444 0deg);
-  transform: rotate(-90deg);
-  z-index: -1;
-}
-
-#timerText {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-/* --------------------------
-   TIMER PULSE ANIMATION
--------------------------- */
-.pulse {
-  animation: pulseAnimation 1.2s infinite;
-}
-
-@keyframes pulseAnimation {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-/* --------------------------
-   WEEKLY SUMMARY
--------------------------- */
+/* WEEKLY SUMMARY */
 .weekly-summary {
   background: rgba(28,28,35,0.95);
   padding: 20px;
@@ -128,49 +52,11 @@ button:hover {
   text-align: left;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
+.weekly-summary h2 { font-size: 1.2rem; margin-bottom: 12px; color: #fff; }
+.weekly-summary p { margin: 6px 0; }
+.weekly-summary button { margin-top: 12px; background: #6bc5a6; color: #fff; border: none; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-size: 0.9rem; }
+.weekly-summary button:hover { background: #5aa38f; }
+.weekly-summary .version { font-size: 0.6rem; color: #555; margin-top: 8px; }
 
-.weekly-summary h2 {
-  font-size: 1.2rem;
-  margin-bottom: 12px;
-  color: #fff;
-}
-
-.weekly-summary p {
-  margin: 6px 0;
-}
-
-.weekly-summary button {
-  margin-top: 12px;
-  background: #6bc5a6;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.weekly-summary button:hover {
-  background: #5aa38f;
-}
-
-.weekly-summary .version {
-  font-size: 0.6rem;
-  color: #555;
-  margin-top: 8px;
-}
-
-/* --------------------------
-   DAILY CHOICE BUTTONS
--------------------------- */
-#yesBtn, #littleBtn, #noBtn {
-  min-width: 80px;
-}
-
-/* --------------------------
-   GENERAL TEXT
--------------------------- */
-div {
-  text-align: center;
-  font-size: 1rem;
-}
+/* GENERAL TEXT */
+div { text-align: center; font-size: 1rem; }
