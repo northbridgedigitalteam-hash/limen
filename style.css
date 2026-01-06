@@ -66,6 +66,17 @@ body {
   text-shadow: 0 0 6px rgba(107,197,166,0.5);
 }
 
+/* Timer Pulse Animation */
+@keyframes pulse {
+  0% { transform: scale(1); box-shadow: 0 0 6px rgba(107,197,166,0.4); }
+  50% { transform: scale(1.05); box-shadow: 0 0 15px rgba(107,197,166,0.6); }
+  100% { transform: scale(1); box-shadow: 0 0 6px rgba(107,197,166,0.4); }
+}
+
+.timer-circle.pulse {
+  animation: pulse 1.2s infinite ease-in-out;
+}
+
 /* Buttons */
 button {
   display: block;
@@ -149,3 +160,4 @@ button:active {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
