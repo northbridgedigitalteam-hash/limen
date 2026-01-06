@@ -35,6 +35,31 @@ function fadeOut(el, duration = 300) {
   });
 }
 
+async function runTimer(duration) {
+  const timerText = document.getElementById('timerText');
+  const fill = document.getElementById('timerFill');
+  const circle = document.querySelector('.timer-circle');
+
+  const startTime = Date.now();
+
+  return new Promise(resolve => {
+    function update() {
+      const elapsed = (Date.now() - startTime) / 1000;
+      const remaining = Math.max(Math.ceil(duration - elapsed), 0);
+      timerText.textContent = remaining;
+
+      const percent = Math.min(elapsed / duration, 1);
+      const color = remaining <= 5 ? '#f5a623' : '#6bc5a6';
+      fill.style.background = `conic-gradient(${color} ${percent * 360}deg, #444 0deg)`;
+      circle.style.animationDuration = remaining <= 5 ? '0.5s' : '1.2s';
+
+      if (percent < 1) requestAnimationFrame(update);
+      else resolve();
+    }
+    update();
+  });
+}
+
 /* --------------------------
    INSTALL HINT (ONE-TIME)
 -------------------------- */
@@ -85,12 +110,61 @@ function showInstallHint() {
 }
 
 /* --------------------------
-   SERVICE WORKER REGISTRATION (for Android)
+   SERVICE WORKER REGISTRATION (Android PWA)
 -------------------------- */
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js')
     .then(() => console.log('Service Worker registered'))
     .catch(err => console.log('SW registration failed:', err));
+}
+
+/* --------------------------
+   INTERVENTIONS (Polyvagal + Attention Regulation)
+-------------------------- */
+const interventions = {
+  Baseline: {
+    steps: [
+      { text: "Peripheral vision + micro-movements", duration: 20 },
+      { text: "Apply alternating pressure to hands or thighs", duration: 20 },
+      { text: "Drop your tongue, roll shoulders, and breathe slowly", duration: 20 }
+    ]
+  }
+};
+
+/* --------------------------
+   SESSION LOGGING
+-------------------------- */
+function logResponse(response) {
+  Storage.appendSession({
+    timestamp: new Date(),
+    response: response
+  });
+}
+
+/* --------------------------
+   WEEKLY SUMMARY
+-------------------------- */
+function showWeeklySummary() {
+  const history = Storage.sessionHistory || [];
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+  const weeklyData = history.filter(s => new Date(s.timestamp) >= oneWeekAgo);
+
+  const counts = { "Yes": 0, "A little": 0, "No": 0 };
+  weeklyData.forEach(s => counts[s.response]++);
+
+  app.innerHTML = `
+    <div class="weekly-summary">
+      <h2>Weekly Reflection</h2>
+      <p>Fully overwhelmed: ${counts["Yes"]} day(s)</p>
+      <p>A little overwhelmed: ${counts["A little"]} day(s)</p>
+      <p>Calm: ${counts["No"]} day(s)</p>
+      <button id="closeSummary">Close</button>
+    </div>
+  `;
+
+  document.getElementById('closeSummary').onclick = () => showEntry();
 }
 
 /* --------------------------
@@ -108,71 +182,67 @@ async function showSplash() {
 }
 
 /* --------------------------
-   ENTRY
+   ENTRY SCREEN
 -------------------------- */
 function showEntry() {
   app.innerHTML = `
     <div>Pause.</div>
-    <button id="continueBtn">Continue</button>
+    <div style="margin-top:12px;">
+      <button id="yesBtn">Yes</button>
+      <button id="littleBtn">A little</button>
+      <button id="noBtn">No</button>
+    </div>
     <div class="app-name">
       <span class="main">LIMEN</span>
       <span class="year">2026</span>
     </div>
   `;
+
   fadeIn(app);
-  document.getElementById('continueBtn').onclick = () => startSession();
+
+  document.getElementById('yesBtn').onclick = async () => {
+    logResponse("Yes");
+    await fadeOut(app);
+    showWeeklySummary();
+  };
+
+  document.getElementById('littleBtn').onclick = async () => {
+    logResponse("A little");
+    await fadeOut(app);
+    startSession();
+  };
+
+  document.getElementById('noBtn').onclick = async () => {
+    logResponse("No");
+    await fadeOut(app);
+    showWeeklySummary();
+  };
 }
 
 /* --------------------------
-   INTERVENTION
+   DELIVER INTERVENTION
 -------------------------- */
-function startSession() {
+async function startSession() {
   const intervention = interventions.Baseline;
-  deliverIntervention(intervention);
-}
 
-function deliverIntervention(intervention) {
-  const duration = intervention.duration;
-
-  app.innerHTML = `
-    <div>${intervention.text}</div>
-    <div class="timer-circle pulse">
-      <div id="timerFill" class="timer-fill"></div>
-      <div id="timerText">${duration}</div>
-    </div>
-    <button id="doneBtn">Done</button>
-    <div class="app-name">
-      <span class="main">LIMEN</span>
-      <span class="year">2026</span>
-    </div>
-  `;
-  fadeIn(app);
-
-  const startTime = Date.now();
-  const fill = document.getElementById('timerFill');
-  const text = document.getElementById('timerText');
-  const circle = document.querySelector('.timer-circle');
-
-  function updateTimer() {
-    const elapsed = (Date.now() - startTime) / 1000;
-    const remaining = Math.max(Math.ceil(duration - elapsed), 0);
-    text.textContent = remaining;
-
-    const percent = Math.min(elapsed / duration, 1);
-    const color = remaining <= 5 ? '#f5a623' : '#6bc5a6';
-    fill.style.background = `conic-gradient(${color} ${percent * 360}deg, #444 0deg)`;
-    circle.style.animationDuration = remaining <= 5 ? '0.5s' : '1.2s';
-
-    if (percent < 1) requestAnimationFrame(updateTimer);
+  for (const step of intervention.steps) {
+    app.innerHTML = `
+      <div>${step.text}</div>
+      <div class="timer-circle pulse">
+        <div id="timerFill" class="timer-fill"></div>
+        <div id="timerText">${step.duration}</div>
+      </div>
+      <div class="app-name">
+        <span class="main">LIMEN</span>
+        <span class="year">2026</span>
+      </div>
+    `;
+    fadeIn(app);
+    await runTimer(step.duration);
+    await fadeOut(app);
   }
 
-  updateTimer();
-
-  document.getElementById('doneBtn').onclick = async () => {
-    Storage.appendSession({ timestamp: new Date() });
-    await fadeOut(app);
-    showEntry();
-  };
+  showEntry();
 }
 
 /* --------------------------
@@ -182,4 +252,3 @@ window.onload = () => {
   showSplash();
   setTimeout(showInstallHint, 1500);
 };
-
