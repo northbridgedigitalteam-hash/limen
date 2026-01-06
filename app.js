@@ -1,86 +1,132 @@
-const app = document.getElementById('app');
-
-function showEntry() {
-  app.innerHTML = `
-    <div>Pause.</div>
-    <button onclick="startSession()">Continue</button>
-    <div class="app-name">LIMEN</div>
-  `;
+/* ================================
+   Global Style
+================================= */
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #1c1c23;
+  color: #e5e5e5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
 }
 
-function startSession(stateOverride = null) {
-  const state = stateOverride || inferState();
-  deliverIntervention(state);
+#app {
+  position: relative;
+  text-align: center;
+  max-width: 420px;
+  width: 90%;
+  padding: 30px 20px;
+  animation: fadeIn 0.3s ease-in-out;
 }
 
-function deliverIntervention(state) {
-  const intervention = interventions[state];
-  const duration = intervention.duration;
-
-  app.innerHTML = `
-    <div style="margin-bottom: 20px;">${intervention.text}</div>
-    <div class="timer-circle">
-      <div id="timerFill" class="timer-fill"></div>
-      <div id="timerText">${duration}</div>
-    </div>
-    <button id="doneBtn">Done</button>
-    <div class="app-name">LIMEN</div>
-  `;
-
-  const startTime = Date.now();
-  const fill = document.getElementById('timerFill');
-  const text = document.getElementById('timerText');
-
-  // Timer animation + countdown
-  const interval = setInterval(() => {
-    const elapsed = (Date.now() - startTime) / 1000;
-    const remaining = Math.max(Math.ceil(duration - elapsed), 0);
-    text.textContent = remaining;
-    const percent = Math.min(elapsed / duration, 1);
-    fill.style.background = `conic-gradient(#0f0 ${percent * 360}deg, #555 0deg)`;
-    if (percent >= 1) clearInterval(interval);
-  }, 100);
-
-  document.getElementById('doneBtn').onclick = () => {
-    clearInterval(interval);
-    Storage.appendSession({ state, timestamp: new Date() });
-    showFeedback(state, startTime);
-  };
+/* ================================
+   Headline/Instruction Text
+================================= */
+#app > div:first-child {
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-bottom: 25px;
+  color: #e5e5e5;
 }
 
-function showFeedback(state, startTime) {
-  app.innerHTML = `
-    <div>Closer to baseline?</div>
-    <button onclick="saveFeedback('${state}', 'Yes', ${startTime})">Yes</button>
-    <button onclick="saveFeedback('${state}', 'A little', ${startTime})">A little</button>
-    <button onclick="saveFeedback('${state}', 'No', ${startTime})">No</button>
-    <div class="app-name">LIMEN</div>
-  `;
+/* ================================
+   Timer Circle
+================================= */
+.timer-circle {
+  width: 110px;
+  height: 110px;
+  border: 4px solid #444;
+  border-radius: 50%;
+  margin: 0 auto 30px auto;
+  position: relative;
+  background-color: #1c1c23;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.4s ease-in-out;
 }
 
-function saveFeedback(state, feedback, startTime) {
-  const sessions = Storage.get('sessionHistory');
-  const last = sessions[sessions.length - 1];
-  last.feedback = feedback;
-  last.duration = Math.round((Date.now() - startTime) / 1000);
-  Storage.set('sessionHistory', sessions);
+.timer-fill {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(#6bc5a6 0deg, #444 0deg);
+  transform: rotate(-90deg);
+  transition: background 0.2s ease;
+}
 
-  if (feedback === 'Yes') {
-    // Auto-close after 2 seconds
-    app.innerHTML = `<div>Returning to baseline...</div><div class="app-name">LIMEN</div>`;
-    setTimeout(showEntry, 2000);
-  } else if (feedback === 'A little') {
-    // Repeat same state
-    startSession(state);
-  } else if (feedback === 'No') {
-    // Pick a different intervention, auto-close after completion
-    const states = Object.keys(interventions).filter(s => s !== state);
-    const newState = states[Math.floor(Math.random() * states.length)];
-    startSession(newState);
-    setTimeout(showEntry, (interventions[newState].duration + 2) * 1000);
+.timer-circle #timerText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #e5e5e5;
+}
+
+/* ================================
+   Button Style
+================================= */
+button {
+  display: block;
+  margin: 30px auto 0 auto;
+  padding: 15px 30px;
+  font-size: 1rem;
+  background: #2b2b35;
+  color: #e5e5e5;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.1s;
+  font-weight: 500;
+}
+
+button:hover {
+  background: #3a3a47;
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+/* ================================
+   App Name - Faint Bottom-Left
+================================= */
+.app-name {
+  position: fixed;
+  bottom: 6px;
+  left: 8px;
+  font-size: 0.7rem;
+  color: rgba(230, 230, 230, 0.10);
+  font-weight: 600;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ================================
+   Responsive Tweaks
+================================= */
+@media (max-width: 400px) {
+  .timer-circle {
+    width: 90px;
+    height: 90px;
+  }
+  .timer-circle #timerText {
+    font-size: 1.2rem;
+  }
+  button {
+    padding: 12px 25px;
+    font-size: 0.95rem;
   }
 }
 
-window.onload = () => {
-  showEntry();
-};
+/* ================================
+   Simple Fade In Animation
+================================= */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
