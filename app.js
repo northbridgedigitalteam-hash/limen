@@ -47,7 +47,7 @@ function deliverIntervention(state){
 
   app.innerHTML=`
     <div>${intervention.text}</div>
-    <div class="timer-circle">
+    <div class="timer-circle pulse">
       <div id="timerFill" class="timer-fill"></div>
       <div id="timerText">${duration}</div>
     </div>
