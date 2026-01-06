@@ -21,13 +21,7 @@ function deliverIntervention(state) {
     <div style="margin-bottom: 20px;">${intervention.text}</div>
     <div class="timer-circle">
       <div id="timerFill" class="timer-fill"></div>
-      <div id="timerText" style="
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 1.2rem;
-      ">${duration}</div>
+      <div id="timerText">${duration}</div>
     </div>
     <button id="doneBtn">Done</button>
     <div class="app-name">LIMEN</div>
@@ -37,7 +31,7 @@ function deliverIntervention(state) {
   const fill = document.getElementById('timerFill');
   const text = document.getElementById('timerText');
 
-  // Timer animation
+  // Timer animation + countdown
   const interval = setInterval(() => {
     const elapsed = (Date.now() - startTime) / 1000;
     const remaining = Math.max(Math.ceil(duration - elapsed), 0);
@@ -83,7 +77,7 @@ function saveFeedback(state, feedback, startTime) {
     const states = Object.keys(interventions).filter(s => s !== state);
     const newState = states[Math.floor(Math.random() * states.length)];
     startSession(newState);
-    setTimeout(showEntry, (interventions[newState].duration + 2) * 1000); // auto-return to baseline
+    setTimeout(showEntry, (interventions[newState].duration + 2) * 1000);
   }
 }
 
