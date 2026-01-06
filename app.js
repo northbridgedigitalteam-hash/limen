@@ -20,16 +20,27 @@ function deliverIntervention(state) {
     <div style="margin-bottom: 20px;">${intervention.text}</div>
     <div class="timer-circle">
       <div id="timerFill" class="timer-fill"></div>
+      <div id="timerText" style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.2rem;
+      ">${duration}</div>
     </div>
     <button id="doneBtn">Done</button>
   `;
 
   const startTime = Date.now();
   const fill = document.getElementById('timerFill');
+  const text = document.getElementById('timerText');
 
-  // Animate timer
+  // Animate timer + countdown
   const interval = setInterval(() => {
     const elapsed = (Date.now() - startTime) / 1000; // seconds
+    const remaining = Math.max(Math.ceil(duration - elapsed), 0);
+    text.textContent = remaining;
+
     const percent = Math.min(elapsed / duration, 1);
     fill.style.background = `conic-gradient(#0f0 ${percent * 360}deg, #555 0deg)`;
 
