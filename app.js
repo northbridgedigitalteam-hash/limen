@@ -59,13 +59,21 @@ function deliverIntervention(state){
   const startTime = Date.now();
   const fill = document.getElementById('timerFill');
   const text = document.getElementById('timerText');
+  const timerCircle = document.querySelector('.timer-circle');
 
   function updateTimer(){
     const elapsed = (Date.now()-startTime)/1000;
     const remaining = Math.max(Math.ceil(duration-elapsed),0);
     text.textContent = remaining;
     const percent = Math.min(elapsed/duration,1);
-    fill.style.background=`conic-gradient(#6bc5a6 ${percent*360}deg, #444 0deg)`;
+
+    // Color shift: green to amber in last 5 seconds
+    const color = remaining <=5 ? '#f5a623' : '#6bc5a6';
+    fill.style.background=`conic-gradient(${color} ${percent*360}deg, #444 0deg)`;
+
+    // Accelerate pulse in last 5 seconds
+    timerCircle.style.animationDuration = remaining<=5 ? '0.5s' : '1.2s';
+
     if(percent<1) requestAnimationFrame(updateTimer);
   }
   updateTimer();
