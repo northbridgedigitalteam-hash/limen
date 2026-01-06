@@ -79,10 +79,18 @@ function showInstallHint() {
     hint.remove();
   };
 
-  // Auto-fade after 8 seconds
   setTimeout(() => {
     if (document.body.contains(hint)) hint.remove();
   }, 8000);
+}
+
+/* --------------------------
+   SERVICE WORKER REGISTRATION (for Android)
+-------------------------- */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js')
+    .then(() => console.log('Service Worker registered'))
+    .catch(err => console.log('SW registration failed:', err));
 }
 
 /* --------------------------
@@ -174,3 +182,4 @@ window.onload = () => {
   showSplash();
   setTimeout(showInstallHint, 1500);
 };
+;
