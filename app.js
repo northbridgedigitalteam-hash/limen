@@ -1,11 +1,21 @@
 const app = document.getElementById('app');
 
-// Helper: fade in content
+// Helper: fade in element
 function fadeIn(element, duration = 300) {
   element.style.opacity = 0;
   element.style.transition = `opacity ${duration}ms ease-in-out`;
   requestAnimationFrame(() => {
     element.style.opacity = 1;
+  });
+}
+
+// Helper: fade out element
+function fadeOut(element, duration = 300) {
+  return new Promise(resolve => {
+    element.style.opacity = 1;
+    element.style.transition = `opacity ${duration}ms ease-in-out`;
+    element.style.opacity = 0;
+    setTimeout(resolve, duration);
   });
 }
 
@@ -43,24 +53,30 @@ function deliverIntervention(state) {
   const fill = document.getElementById('timerFill');
   const text = document.getElementById('timerText');
 
-  // Timer animation + countdown
-  const interval = setInterval(() => {
+  // Smooth timer using requestAnimationFrame
+  function updateTimer() {
     const elapsed = (Date.now() - startTime) / 1000;
     const remaining = Math.max(Math.ceil(duration - elapsed), 0);
     text.textContent = remaining;
+
     const percent = Math.min(elapsed / duration, 1);
+    // Smooth fill using linear interpolation
     fill.style.background = `conic-gradient(#6bc5a6 ${percent * 360}deg, #444 0deg)`;
-    if (percent >= 1) clearInterval(interval);
-  }, 100);
+
+    if (percent < 1) {
+      requestAnimationFrame(updateTimer);
+    }
+  }
+  updateTimer();
 
   document.getElementById('doneBtn').onclick = () => {
-    clearInterval(interval);
     Storage.appendSession({ state, timestamp: new Date() });
     showFeedback(state, startTime);
   };
 }
 
-function showFeedback(state, startTime) {
+async function showFeedback(state, startTime) {
+  await fadeOut(app);
   app.innerHTML = `
     <div>Closer to baseline?</div>
     <button onclick="saveFeedback('${state}', 'Yes', ${startTime})">Yes</button>
@@ -71,7 +87,7 @@ function showFeedback(state, startTime) {
   fadeIn(app);
 }
 
-function saveFeedback(state, feedback, startTime) {
+async function saveFeedback(state, feedback, startTime) {
   const sessions = Storage.get('sessionHistory');
   const last = sessions[sessions.length - 1];
   last.feedback = feedback;
@@ -79,6 +95,7 @@ function saveFeedback(state, feedback, startTime) {
   Storage.set('sessionHistory', sessions);
 
   if (feedback === 'Yes') {
+    await fadeOut(app);
     app.innerHTML = `<div>Returning to baseline...</div><div class="app-name">LIMEN</div>`;
     fadeIn(app);
     setTimeout(showEntry, 2000);
@@ -87,8 +104,8 @@ function saveFeedback(state, feedback, startTime) {
   } else if (feedback === 'No') {
     const states = Object.keys(interventions).filter(s => s !== state);
     const newState = states[Math.floor(Math.random() * states.length)];
+    await fadeOut(app); // smooth fade-out before new intervention
     startSession(newState);
-    setTimeout(showEntry, (interventions[newState].duration + 2) * 1000);
   }
 }
 
