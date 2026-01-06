@@ -182,4 +182,4 @@ window.onload = () => {
   showSplash();
   setTimeout(showInstallHint, 1500);
 };
-;
+
