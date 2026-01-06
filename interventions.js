@@ -1,14 +1,50 @@
 const interventions = {
-  "Baseline": { text: "You are regulated. Stay here.", duration: 0 },
-  "CognitiveOverdrive": { text: "Let your eyes soften. Notice edges without focusing. Breathe in through your nose, out slowly for 60s.", duration: 90 },
-  "EmotionalLoad": { text: "Apply alternating pressure to hands or thighs for 60s.", duration: 90 },
-  "SomaticTension": { text: "Drop your tongue, roll shoulders, and breathe slowly for 60s.", duration: 90 },
-  "Hypervigilance": { text: "Expand peripheral vision and breathe slowly for 60s.", duration: 90 },
-  "DecisionFatigue": { text: "Write the next smallest necessary action in your mind. Stop.", duration: 60 },
-  "Understimulated": { text: "Stand, lean slightly forward, take three sharp nasal inhales.", duration: 60 },
-  "FragmentedFocus": { text: "Close eyes, block sound, count breaths slowly for 60s.", duration: 60 },
-  "RecoveryDebt": { text: "Sit or lie down. Close eyes and breathe slowly for 90s.", duration: 90 },
-  "AnticipatoryStress": { text: "Focus only on the next 10 minutes. Take three slow breaths.", duration: 60 },
-  "SocialDepletion": { text: "Reduce input, stillness for 90s.", duration: 90 },
-  "ShutdownDrift": { text: "Peripheral vision + micro-movements for 60s.", duration: 60 }
+  "CognitiveOverdrive": {
+    text: "Close your eyes, take slow breaths, and focus on a single object for 90s.",
+    duration: 90
+  },
+  "EmotionalLoad": {
+    text: "Apply alternating pressure to your hands or thighs for 60s.",
+    duration: 60
+  },
+  "SomaticTension": {
+    text: "Drop your tongue, roll your shoulders, and breathe slowly for 60s.",
+    duration: 60
+  },
+  "Hypervigilance": {
+    text: "Expand your peripheral vision and breathe slowly for 60s.",
+    duration: 60
+  },
+  "DecisionFatigue": {
+    text: "Close your eyes and count your breaths slowly for 90s.",
+    duration: 90
+  },
+  "Understimulated": {
+    text: "Move your fingers and toes gently for 60s while breathing deeply.",
+    duration: 60
+  },
+  "FragmentedFocus": {
+    text: "Trace your surroundings with your eyes slowly for 60s.",
+    duration: 60
+  },
+  "RecoveryDebt": {
+    text: "Lie back and perform a body scan, relaxing each part for 90s.",
+    duration: 90
+  },
+  "AnticipatoryStress": {
+    text: "Imagine a calm place and breathe slowly for 90s.",
+    duration: 90
+  },
+  "SocialDepletion": {
+    text: "Place your hands on your thighs, inhale/exhale slowly for 60s.",
+    duration: 60
+  },
+  "ShutdownDrift": {
+    text: "Focus on gentle stretches of neck and shoulders for 90s.",
+    duration: 90
+  },
+  "Baseline": {
+    text: "Take a few slow breaths, feel your baseline state for 60s.",
+    duration: 60
+  }
 };
